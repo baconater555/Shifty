@@ -1,0 +1,151 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "BABY HUB👶",
+   Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
+   LoadingTitle = "Rayfield Interface Suite",
+   LoadingSubtitle = "by Baconater",
+   ShowText = "Rayfield", -- for mobile users to unhide rayfield, change if you'd like
+   Theme = "Default", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+
+   ToggleUIKeybind = "K", -- The keybind to toggle the UI visibility (string like "K" or Enum.KeyCode)
+
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
+
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil, -- Create a custom folder for your hub/game
+      FileName = "Baby Hub"
+   },
+
+   Discord = {
+      Enabled = false, -- Prompt the user to join your Discord server if their executor supports it
+      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
+      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+   },
+
+   KeySystem = false, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "Untitled",
+      Subtitle = "Key System",
+      Note = "No method of obtaining the key is provided", -- Use this to tell the user how to get a key
+      FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+      Key = {"Hello"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+   }
+})
+
+local Tab = Window:CreateTab("Baby stealer", 4483362458) -- Title, Image
+
+local Section = Tab:CreateSection("BABY HUB STEAL")
+
+local Button = Tab:CreateButton({
+   Name = "BABY LAG!",
+   Callback = function()
+local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local Lighting = game:GetService("Lighting")
+local Players = game:GetService("Players")
+
+local player = Players.LocalPlayer
+local cam = workspace.CurrentCamera
+
+local TOGGLE_KEY = Enum.KeyCode.F
+local effectsOn = false
+local stutterConnection, freezeConnection = nil, nil
+
+-- Motion Blur setup
+local blur = Lighting:FindFirstChild("MotionBlurEffect")
+if not blur then
+	blur = Instance.new("BlurEffect")
+	blur.Name = "MotionBlurEffect"
+	blur.Parent = Lighting
+end
+blur.Size = 0
+
+-- Screen freeze function
+local function screenFreeze()
+	local freezeStep = 0
+	freezeConnection = RunService:BindToRenderStep("ScreenFreeze", Enum.RenderPriority.Camera.Value + 1, function(dt)
+		if freezeStep % 3 ~= 0 then
+			task.wait(0) -- tiny frame hold
+		end
+		freezeStep += 1
+	end)
+end
+
+-- Walk & Jump Stutter
+local function stutterHumanoid(humanoid)
+	stutterConnection = RunService.Heartbeat:Connect(function()
+		if math.random(1, 3) == 1 then
+			humanoid.WalkSpeed = 0
+			humanoid.JumpPower = 0
+			task.wait(0.05) -- short stutter
+			humanoid.WalkSpeed = 16
+			humanoid.JumpPower = 13
+		end
+	end)
+end
+
+local function enableEffects()
+	effectsOn = true
+	
+	-- FOV distortion
+	cam.FieldOfView = 20
+	
+	-- Motion blur
+	blur.Size = 170
+	
+	-- Screen freeze spikes
+	screenFreeze()
+	
+	-- Stutter character movement
+	local character = player.Character or player.CharacterAdded:Wait()
+	local humanoid = character:WaitForChild("Humanoid")
+	stutterHumanoid(humanoid)
+end
+
+local function disableEffects()
+	effectsOn = false
+	
+	cam.FieldOfView = 20
+	blur.Size = 0
+	
+	if stutterConnection then
+		stutterConnection:Disconnect()
+		stutterConnection = nil
+	end
+	
+	if freezeConnection then
+		RunService:UnbindFromRenderStep("ScreenFreeze")
+		freezeConnection = nil
+	end
+	
+	local character = player.Character
+	if character and character:FindFirstChild("Humanoid") then
+		character.Humanoid.WalkSpeed = 16
+		character.Humanoid.JumpPower = 50
+	end
+end
+
+UIS.InputBegan:Connect(function(input, gp)
+	if gp then return end
+	if input.KeyCode == TOGGLE_KEY then
+		if effectsOn then
+			disableEffects()
+		else
+			enableEffects()
+		end
+	end
+end)     
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "speed!",
+   Callback = function()
+   Player.Character.Humanoid.WalkSpeed = 28
+   end,
+})
